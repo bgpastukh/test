@@ -4,6 +4,6 @@
     <h1>Hi {{ name }}!</h1>
     <p>Please, confirm your registration by clicking link below:</p>
     <p>
-        <a data-href="{{ path('security_bundle.registration.confirm', {'confirmationToken' : confirmationToken}) }}">CONFIRM</a>
+        <a href="{{ path('security_bundle.registration.confirm', {'confirmationToken' : confirmationToken}) }}">CONFIRM</a>
     </p>
 {% endblock %}
