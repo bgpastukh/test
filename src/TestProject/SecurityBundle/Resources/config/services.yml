@@ -1,0 +1,15 @@
+services:
+    security.form.registration:
+        class: TestProject\SecurityBundle\Form\RegistrationType
+        tags:
+            - { name: form.type, alias: secutity_user_registration }
+
+    security.registration.service:
+        class: TestProject\SecurityBundle\Service\RegistrationService
+        arguments: ['@doctrine.orm.entity_manager', '@security.password_encoder']
+
+    security.user_listener:
+        class: TestProject\SecurityBundle\EventListener\UserListener
+        arguments: ['@mailer.mailer']
+        tags:
+            - { name: doctrine.orm.entity_listener }

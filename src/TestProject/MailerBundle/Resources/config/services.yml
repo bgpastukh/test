@@ -1,0 +1,4 @@
+services:
+    mailer.mailer:
+        class: TestProject\MailerBundle\Service\MailerService
+        arguments: ['@twig', '@mailer', '%mailer_user%']

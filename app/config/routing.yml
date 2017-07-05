@@ -1,0 +1,13 @@
+test_project_mailer:
+    resource: "@TestProjectMailerBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
+test_project_security:
+    resource: "@TestProjectSecurityBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
+app:
+    resource: '@AppBundle/Controller/'
+    type: annotation
