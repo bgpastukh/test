@@ -2,6 +2,7 @@
 
 namespace TestProject\SecurityBundle\EventListener;
 
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use TestProject\SecurityBundle\Service\ReferralTransitionService;
 
@@ -17,10 +18,15 @@ class RequestListener
 
     public function onKernelRequest(GetResponseEvent $event): void
     {
-        $referralCode = $event->getRequest()->query->get('ref');
+        $request = $event->getRequest();
+        $referralCode = $request->query->get('ref');
 
         if ($referralCode) {
             $this->referralTransitionService->catchTransition($referralCode);
+
+            $uri = preg_replace('/\?ref=[^.*]{6}/', '', $request->getRequestUri());
+            $response = new RedirectResponse($uri);
+            $event->setResponse($response);
         }
     }
 }
