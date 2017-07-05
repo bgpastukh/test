@@ -4,7 +4,6 @@ namespace TestProject\SecurityBundle\EventListener;
 
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Event\LifecycleEventArgs;
-use Symfony\Component\DependencyInjection\Container;
 use TestProject\MailerBundle\Service\MailerService;
 use TestProject\SecurityBundle\Entity\User;
 

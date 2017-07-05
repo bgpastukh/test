@@ -13,3 +13,14 @@ services:
         arguments: ['@mailer.mailer']
         tags:
             - { name: doctrine.orm.entity_listener }
+
+    security.requst_listener:
+            class: TestProject\SecurityBundle\EventListener\RequestListener
+            arguments: ['@security.referral_transition.service']
+            tags:
+                - { name: kernel.event_listener, event: kernel.request }
+
+    security.referral_transition.service:
+            class: TestProject\SecurityBundle\Service\ReferralTransitionService
+            arguments: ['@doctrine.orm.entity_manager', '@request_stack']
+
