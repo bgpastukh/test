@@ -6,7 +6,7 @@ services:
 
     security.registration.service:
         class: TestProject\SecurityBundle\Service\RegistrationService
-        arguments: ['@doctrine.orm.entity_manager', '@security.password_encoder']
+        arguments: ['@doctrine.orm.entity_manager', '@security.password_encoder', '@request_stack']
 
     security.user_listener:
         class: TestProject\SecurityBundle\EventListener\UserListener
