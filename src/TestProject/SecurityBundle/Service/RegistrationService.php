@@ -3,7 +3,9 @@
 namespace TestProject\SecurityBundle\Service;
 
 use Doctrine\ORM\EntityManager;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoder;
+use TestProject\SecurityBundle\Entity\ReferralTransition;
 use TestProject\SecurityBundle\Entity\User;
 
 class RegistrationService
@@ -14,10 +16,14 @@ class RegistrationService
     /** @var UserPasswordEncoder */
     private $passwordEncoder;
 
-    public function __construct(EntityManager $em, UserPasswordEncoder $passwordEncoder)
+    /** @var RequestStack */
+    private $requestStack;
+
+    public function __construct(EntityManager $em, UserPasswordEncoder $passwordEncoder, RequestStack $requestStack)
     {
         $this->em = $em;
         $this->passwordEncoder = $passwordEncoder;
+        $this->requestStack = $requestStack;
     }
 
     public function registerUser(User $user): void
@@ -28,7 +34,8 @@ class RegistrationService
             ->setConfirmationToken(hash('sha512', time() . random_int(0, 1000)));
 
         $referralCode = $this->createUniqueReferralCode();
-        $user->setReferralCode($referralCode);
+        $user->setReferralCode($referralCode)
+            ->setReferer($this->checkLedByReferrer());
 
         $this->em->persist($user);
         $this->em->flush();
@@ -44,5 +51,19 @@ class RegistrationService
     {
         // For big project we should check same code exists in DB.
         return substr(md5(microtime() . rand()), 0, 6);
+    }
+
+    private function checkLedByReferrer(): ?User
+    {
+        $clientIp = $this->requestStack->getMasterRequest()->getClientIp();
+        $referralTransitions = $this->em->getRepository(ReferralTransition::class)->findBy(['ip' => $clientIp]);
+
+        if (!$referralTransitions) {
+            return null;
+        }
+        /** @var ReferralTransition $lastTransition */
+        $lastTransition = end($referralTransitions);
+
+        return $lastTransition->getReferer();
     }
 }
