@@ -43,7 +43,10 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="string", nullable=false)
-     * @Assert\GreaterThan(6)
+     * @Assert\Length(
+     *      min = 6,
+     *      minMessage = "Password is to short",
+     * )
      */
     protected $password;
 
